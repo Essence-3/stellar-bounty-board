@@ -408,11 +408,15 @@ const healthHandler = (_req: Request, res: Response) => {
 
 app.get('/api/health', idempotencyMiddleware, healthHandler);
 
-app.get('/api/health/deep', async (_req: Request, res: Response) => {
-  const result = await runDeepHealthCheck();
-  const statusCode = result.overall === 'up' ? 200 : 503;
-  res.status(statusCode).json(result);
-});
+app.get(
+  '/api/health/deep',
+  idempotencyMiddleware,
+  async (_req: Request, res: Response) => {
+    const result = await runDeepHealthCheck();
+    const statusCode = result.overall === 'up' ? 200 : 503;
+    res.status(statusCode).json(result);
+  },
+);
 
 app.get('/worker/health', (_req: Request, res: Response) => {
   res.json({
